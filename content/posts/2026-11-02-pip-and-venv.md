@@ -1,91 +1,104 @@
 ---
-title: pip กับ venv ต่างกันยังไง และทำไมถึงต้องมี activate
+title: pip and venv, and why you have to activate
 date: 2026-11-02
 tags: python, pip, venv
 ---
 
-ตอนทำเว็บนี้ ผมเขียนสคริปต์ Python ตัวเล็ก ๆ (`build.py`) ที่แปลงไฟล์ Markdown เป็น HTML
-สคริปต์ใช้แพ็กเกจ `markdown` ตัวเดียว แต่พอรัน `python3 build.py` กลับเจอ error
+While building this site I wrote a small Python script (`build.py`) that turns
+Markdown files into HTML. It depends on a single package, `markdown`, but when I ran
+`python3 build.py` I got an error:
 
 ```
 ModuleNotFoundError: No module named 'markdown'
 ```
 
-ทั้งที่ติดตั้งไปแล้ว นี่คือที่มาของโพสต์นี้ครับ
+even though I had already installed it. This post is what I learned from that.
 
-### pip คืออะไร
+### What is pip?
 
-`pip` คือเครื่องมือดาวน์โหลดแพ็กเกจ Python จากคลังกลางชื่อ [PyPI](https://pypi.org/)
-มาไว้ในเครื่อง
+`pip` downloads Python packages from a central repository called
+[PyPI](https://pypi.org/) onto your machine.
 
 ```bash
 pip install markdown
 ```
 
-คำสั่งนี้ดาวน์โหลดแพ็กเกจ `markdown` แล้วเก็บไว้ในโฟลเดอร์ `site-packages` ของ Python ตัวที่ pip ผูกอยู่
-เมื่อสคริปต์เขียนว่า `import markdown` Python ก็จะไปหาในโฟลเดอร์นั้น
+This downloads the `markdown` package and stores it in the `site-packages` folder of
+the Python that pip is attached to. When a script says `import markdown`, Python looks
+for it in that folder.
 
-จุดสำคัญคือ **แพ็กเกจถูกติดตั้งให้ "Python ตัวหนึ่ง" ไม่ได้ติดตั้งให้ทั้งเครื่อง**
+The key point: **a package is installed for one particular Python, not for the whole
+machine.**
 
-### ปัญหาของการ pip install ลงเครื่องตรง ๆ
+### The problem with installing everything globally
 
-ถ้าติดตั้งทุกอย่างลง Python ตัวเดียวของเครื่อง จะเจอปัญหาเหล่านี้
+If you install everything into the machine's single Python, you run into trouble:
 
-- โปรเจกต์ A ต้องการแพ็กเกจเวอร์ชัน 1 แต่โปรเจกต์ B ต้องการเวอร์ชัน 2 ติดตั้งได้แค่เวอร์ชันเดียวต่อหนึ่ง Python
-- แพ็กเกจเก่าที่ไม่ได้ใช้แล้วสะสมเต็มเครื่อง และไม่รู้ว่าอันไหนของโปรเจกต์ไหน
-- บางเครื่อง (เช่น Python ที่ติดตั้งผ่าน Homebrew บน macOS) ปฏิเสธการติดตั้งแบบนี้เลย
-  โดยตอบ `error: externally-managed-environment` เพราะไม่อยากให้ผู้ใช้ไปเปลี่ยนแพ็กเกจที่ระบบพึ่งพาอยู่
+- Project A needs version 1 of a package and project B needs version 2, but one Python
+  can only hold one version.
+- Old packages you no longer use pile up, and you can't tell which project they belong
+  to.
+- Some systems (for example Python installed through Homebrew on macOS) refuse
+  outright and answer `error: externally-managed-environment`, because they don't want
+  you changing packages the system itself depends on.
 
-### venv คืออะไร
+### What is venv?
 
-`venv` สร้าง "Python อีกชุดหนึ่ง" ไว้ในโฟลเดอร์ของโปรเจกต์ มีที่เก็บแพ็กเกจเป็นของตัวเอง
+`venv` creates a second, separate copy of Python inside your project folder, with its
+own place to store packages.
 
 ```bash
 python3 -m venv .venv
 .venv/bin/pip install markdown
 ```
 
-บรรทัดแรกสร้างโฟลเดอร์ `.venv/` ส่วนบรรทัดที่สอง ติดตั้ง `markdown` ลงใน Python ของ `.venv`
-ไม่ได้ติดตั้งลง Python ของเครื่อง โปรเจกต์แต่ละอันจึงมีชุดแพ็กเกจของตัวเอง ไม่ชนกัน
+The first line creates the `.venv/` folder. The second installs `markdown` into the
+Python inside `.venv`, not the system one. Each project gets its own set of packages,
+so they can't collide.
 
-### ทำไมต้อง activate
+### Why do you have to activate it?
 
-นี่คือจุดที่ผมสงสัยที่สุด `python3` ที่พิมพ์ในเทอร์มินัลคือ Python ของเครื่อง
-ซึ่งไม่รู้จัก `.venv/` เลย ตอนนั้นจึงมีสามวิธีที่จะใช้ Python ของ `.venv`
+This was the part that confused me most. The `python3` you type in the terminal is the
+machine's Python, and it knows nothing about `.venv/`. So there are three ways to end
+up using the Python in `.venv`:
 
-| คำสั่ง | Python ที่ถูกเรียก | เจอ `markdown` ไหม |
+| Command | Python that runs | Finds `markdown`? |
 |---|---|---|
-| `python3 build.py` | ของเครื่อง | ไม่เจอ |
-| `.venv/bin/python build.py` | ของ `.venv` | เจอ |
-| `source .venv/bin/activate` แล้ว `python build.py` | ของ `.venv` | เจอ |
+| `python3 build.py` | the system's | no |
+| `.venv/bin/python build.py` | the one in `.venv` | yes |
+| `source .venv/bin/activate`, then `python build.py` | the one in `.venv` | yes |
 
-`activate` ไม่ได้ทำอะไรลึกลับ มันแค่ทำให้คำว่า `python` ในเทอร์มินัลนั้น
-ชี้ไปที่ Python ของ `.venv` แทน และมีผลเฉพาะหน้าต่างเทอร์มินัลนั้น
-(เปิดหน้าต่างใหม่ก็ต้องทำซ้ำ) เลิกใช้ได้ด้วย `deactivate`
+`activate` isn't magic. It just makes the word `python` in that terminal point to the
+Python inside `.venv`, and only for that terminal window. Open a new window and you
+have to do it again. `deactivate` undoes it.
 
-### เลือกอะไรดี
+### Which should you use?
 
-venv แลกความสะอาดของเครื่องกับขั้นตอนเพิ่มตอนรัน
+venv trades a cleaner machine for extra steps when you run things.
 
-- **มีหลายโปรเจกต์ หรือแพ็กเกจหลายตัว:** ใช้ venv ปัญหาเวอร์ชันชนกันเจอจริงและแก้ยาก
-- **โปรเจกต์เดียว แพ็กเกจน้อย บนเครื่องของตัวเอง:** `pip install` ลงเครื่องตรง ๆ ก็ใช้ได้
-  ตราบที่ระบบไม่บล็อกการติดตั้ง
+- **Several projects, or many packages:** use venv. Version conflicts are real and
+  painful to untangle.
+- **One project, few packages, on your own machine:** a plain `pip install` into the
+  machine's Python is fine, as long as your system doesn't block it.
 
-ผมเลือก venv สำหรับเว็บนี้ตามหลักปฏิบัติ แต่พบว่ามันเกินความจำเป็นเล็กน้อย
-เพราะมีโปรเจกต์เดียวและแพ็กเกจเดียว
+I chose venv for this site because that's the usual best practice, but it turned out to
+be slightly more than I needed, since there is one project and one package.
 
-### ถ้าไม่อยากพิมพ์ยาวทุกครั้ง
+### If you don't want to type the long command every time
 
-- ใช้ `.venv/bin/python build.py` ได้เลยโดยไม่ต้อง activate
-- ให้สคริปต์หา venv เอง ที่เว็บนี้ `build.py` ตรวจว่าไม่มี `markdown` หรือเปล่า
-  ถ้าไม่มีจะสร้าง `.venv` ติดตั้ง แล้วรันตัวเองใหม่ด้วย Python ของ `.venv` ผลคือพิมพ์ `python3 build.py` ได้ตามปกติ
-- เครื่องมืออย่าง [uv](https://docs.astral.sh/uv/) จัดการ venv ให้อัตโนมัติ
-  (ผมยังไม่ได้ลองใช้)
+- Use `.venv/bin/python build.py` directly, with no activation.
+- Let the script find the venv itself. In this site's `build.py`, if `markdown` is
+  missing, the script creates `.venv`, installs it, and re-runs itself with the
+  `.venv` Python. The result is that `python3 build.py` works as normal.
+- Tools like [uv](https://docs.astral.sh/uv/) manage the venv for you automatically
+  (I haven't tried it yet).
 
-### ข้อควรจำ
+### Things to remember
 
-- ใส่ `.venv/` ไว้ใน `.gitignore` เสมอ ไม่ต้อง commit ขึ้น git
-- เก็บรายชื่อแพ็กเกจไว้ในไฟล์ `requirements.txt` (สร้างด้วย `pip freeze > requirements.txt`)
-  คนอื่นหรือตัวเองในอนาคตจะติดตั้งได้ด้วย `pip install -r requirements.txt`
-- ถ้าเจอ `ModuleNotFoundError` ทั้งที่ติดตั้งแล้ว สงสัยไว้ก่อนว่า Python ที่รันกับ Python ที่ pip ติดตั้งให้ **คนละตัวกัน**
-  ตรวจได้ด้วย `which python3` และ `python3 -m pip --version`
+- Always put `.venv/` in `.gitignore`. Don't commit it.
+- Keep your package list in a `requirements.txt` (create it with
+  `pip freeze > requirements.txt`). Other people, or you in the future, can then install
+  everything with `pip install -r requirements.txt`.
+- If you get `ModuleNotFoundError` even though you installed the package, suspect first
+  that the Python running your script and the Python pip installed into are **two
+  different ones**. Check with `which python3` and `python3 -m pip --version`.

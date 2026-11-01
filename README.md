@@ -26,8 +26,9 @@ build.py   the generator
 3. Open `docs/index.html` (home: 10 recent posts with excerpts) to preview. `docs/archive.html` lists every post.
 4. `git add . && git commit -m "..." && git push`
 
-One post per date (URL is `/blog/YYYY/MM/DD/`). Images go in `static/images/` and are
-referenced from a post as `../../../../images/name.png`.
+Post URL is `/blog/YYYY/MM/DD/slug/` (slug = the filename after the date), so several
+posts can share a date. Images go in `static/images/` and are referenced from a post as
+`../../../../../images/name.png`.
 
 ## Resume
 `static/resume.pdf` is git-ignored because it contains a phone number.

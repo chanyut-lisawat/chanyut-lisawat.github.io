@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pip and venv, and why you have to activate - Chanyut Lisawat</title>
+    <meta name="description" content="pip and venv, and why you have to activate">
+    <link rel="stylesheet" href="../../../../../style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <a class="portrait" href="../../../../../index.html" aria-label="chanyut, home">CL</a>
+            <a class="identity" href="../../../../../index.html">
+                <h1>Research Engineer</h1>
+                <h1>chanyut</h1>
+                <address>chanyut lisawat &middot; chanyut.lisawat25@gmail.com</address>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="../../../../../index.html">Home</a></li>
+                    <li><a href="../../../../../archive.html">Archive</a></li>
+                    <li><a href="../../../../../about.html">About</a></li>
+                    <li><a href="../../../../../contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <article class="post">
+            <h2 class="post-title">pip and venv, and why you have to activate</h2>
+            <p class="post-date">2026-11-02</p>
+<p>While building this site I wrote a small Python script (<code>build.py</code>) that turns
+Markdown files into HTML. It depends on a single package, <code>markdown</code>, but when I ran
+<code>python3 build.py</code> I got an error:</p>
+<pre><code>ModuleNotFoundError: No module named 'markdown'
+</code></pre>
+<p>even though I had already installed it. This post is what I learned from that.</p>
+<h3>What is pip?</h3>
+<p><code>pip</code> downloads Python packages from a central repository called
+<a href="https://pypi.org/">PyPI</a> onto your machine.</p>
+<pre><code class="language-bash">pip install markdown
+</code></pre>
+<p>This downloads the <code>markdown</code> package and stores it in the <code>site-packages</code> folder of
+the Python that pip is attached to. When a script says <code>import markdown</code>, Python looks
+for it in that folder.</p>
+<p>The key point: <strong>a package is installed for one particular Python, not for the whole
+machine.</strong></p>
+<h3>The problem with installing everything globally</h3>
+<p>If you install everything into the machine's single Python, you run into trouble:</p>
+<ul>
+<li>Project A needs version 1 of a package and project B needs version 2, but one Python
+  can only hold one version.</li>
+<li>Old packages you no longer use pile up, and you can't tell which project they belong
+  to.</li>
+<li>Some systems (for example Python installed through Homebrew on macOS) refuse
+  outright and answer <code>error: externally-managed-environment</code>, because they don't want
+  you changing packages the system itself depends on.</li>
+</ul>
+<h3>What is venv?</h3>
+<p><code>venv</code> creates a second, separate copy of Python inside your project folder, with its
+own place to store packages.</p>
+<pre><code class="language-bash">python3 -m venv .venv
+.venv/bin/pip install markdown
+</code></pre>
+<p>The first line creates the <code>.venv/</code> folder. The second installs <code>markdown</code> into the
+Python inside <code>.venv</code>, not the system one. Each project gets its own set of packages,
+so they can't collide.</p>
+<h3>Why do you have to activate it?</h3>
+<p>This was the part that confused me most. The <code>python3</code> you type in the terminal is the
+machine's Python, and it knows nothing about <code>.venv/</code>. So there are three ways to end
+up using the Python in <code>.venv</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Python that runs</th>
+<th>Finds <code>markdown</code>?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>python3 build.py</code></td>
+<td>the system's</td>
+<td>no</td>
+</tr>
+<tr>
+<td><code>.venv/bin/python build.py</code></td>
+<td>the one in <code>.venv</code></td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>source .venv/bin/activate</code>, then <code>python build.py</code></td>
+<td>the one in <code>.venv</code></td>
+<td>yes</td>
+</tr>
+</tbody>
+</table>
+<p><code>activate</code> isn't magic. It just makes the word <code>python</code> in that terminal point to the
+Python inside <code>.venv</code>, and only for that terminal window. Open a new window and you
+have to do it again. <code>deactivate</code> undoes it.</p>
+<h3>Which should you use?</h3>
+<p>venv trades a cleaner machine for extra steps when you run things.</p>
+<ul>
+<li><strong>Several projects, or many packages:</strong> use venv. Version conflicts are real and
+  painful to untangle.</li>
+<li><strong>One project, few packages, on your own machine:</strong> a plain <code>pip install</code> into the
+  machine's Python is fine, as long as your system doesn't block it.</li>
+</ul>
+<p>I chose venv for this site because that's the usual best practice, but it turned out to
+be slightly more than I needed, since there is one project and one package.</p>
+<h3>If you don't want to type the long command every time</h3>
+<ul>
+<li>Use <code>.venv/bin/python build.py</code> directly, with no activation.</li>
+<li>Let the script find the venv itself. In this site's <code>build.py</code>, if <code>markdown</code> is
+  missing, the script creates <code>.venv</code>, installs it, and re-runs itself with the
+  <code>.venv</code> Python. The result is that <code>python3 build.py</code> works as normal.</li>
+<li>Tools like <a href="https://docs.astral.sh/uv/">uv</a> manage the venv for you automatically
+  (I haven't tried it yet).</li>
+</ul>
+<h3>Things to remember</h3>
+<ul>
+<li>Always put <code>.venv/</code> in <code>.gitignore</code>. Don't commit it.</li>
+<li>Keep your package list in a <code>requirements.txt</code> (create it with
+  <code>pip freeze &gt; requirements.txt</code>). Other people, or you in the future, can then install
+  everything with <code>pip install -r requirements.txt</code>.</li>
+<li>If you get <code>ModuleNotFoundError</code> even though you installed the package, suspect first
+  that the Python running your script and the Python pip installed into are <strong>two
+  different ones</strong>. Check with <code>which python3</code> and <code>python3 -m pip --version</code>.</li>
+</ul>
+<p class="tags"><span>python</span> <span>pip</span> <span>venv</span></p>
+<p class="post-nav"><a href="../../../../2026/11/02/link-examples/" rel="prev">&laquo; Link examples in Markdown</a></p>
+        </article>
+
+    </main>
+
+    <footer>
+        <p>Chanyut Lisawat</p>
+    </footer>
+</body>
+</html>

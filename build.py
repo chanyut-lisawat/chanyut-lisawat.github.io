@@ -100,16 +100,20 @@ def load_posts():
         if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", p["date"]):
             fail(f"{path.name}: date must be YYYY-MM-DD")
         p["tags"] = [t.strip() for t in p.get("tags", "").split(",") if t.strip()]
+        m = re.fullmatch(r"(\d{4}-\d{2}-\d{2})-(.+)", path.stem)
+        if not m:
+            fail(f"{path.name}: filename must be YYYY-MM-DD-slug.md")
+        if m.group(1) != p["date"]:
+            fail(f"{path.name}: filename date does not match frontmatter date {p['date']}")
+        y, mo, d = p["date"].split("-")
+        p["url"] = f"blog/{y}/{mo}/{d}/{m.group(2)}/"
         posts.append(p)
     seen = set()
     for p in posts:
-        if p["date"] in seen:
-            fail(f"two posts share date {p['date']} (URL is /blog/YYYY/MM/DD/)")
-        seen.add(p["date"])
-    posts.sort(key=lambda p: p["date"], reverse=True)
-    for p in posts:
-        y, m, d = p["date"].split("-")
-        p["url"] = f"blog/{y}/{m}/{d}/"
+        if p["url"] in seen:
+            fail(f"two posts share the URL {p['url']}")
+        seen.add(p["url"])
+    posts.sort(key=lambda p: (p["date"], p["url"]), reverse=True)
     return posts
 
 
@@ -121,7 +125,7 @@ def build_posts(posts):
         nav = ""
         if i + 1 < len(posts):
             older = posts[i + 1]
-            nav = (f'<p class="post-nav"><a href="../../../{older["url"][5:]}" '
+            nav = (f'<p class="post-nav"><a href="../../../../{older["url"][5:]}" '
                    f'rel="prev">&laquo; {html.escape(older["title"])}</a></p>')
         tags = ""
         if p["tags"]:
@@ -129,7 +133,7 @@ def build_posts(posts):
                 f"<span>{html.escape(t)}</span>" for t in p["tags"]) + "</p>"
         body = post_tpl.format(title=title, date=p["date"], content=content,
                                tags=tags, nav=nav)
-        render(OUT / p["url"] / "index.html", "../../../../", body,
+        render(OUT / p["url"] / "index.html", "../../../../../", body,
                f"{title} - {NAME}", title, None)
 
 
