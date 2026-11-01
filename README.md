@@ -1,35 +1,42 @@
 # my_website
 
-Static site: Markdown + HTML sources in, plain HTML out. No database.
+## The one rule
+**Edit only inside `src/`. Never edit anything in `docs/`.**
+`docs/` is the finished website, rebuilt from `src/` every time you run:
 
 ```
-content/
-  posts/   blog posts  YYYY-MM-DD-slug.md   (frontmatter: title, date, tags)
-  pages/   about.html, contact.html         (frontmatter: title, description)
-templates/ base.html (header/nav/footer), home.html, archive.html, post.html
-static/    style.css, images/, resume.pdf   (copied as-is)
-docs/      GENERATED output served by GitHub Pages - never edit by hand
-build.py   the generator
+python3 build.py
 ```
+
+## What to edit
+| I want to change...            | Edit this file                         |
+|--------------------------------|----------------------------------------|
+| the About page                 | `src/pages/about.html`                 |
+| the Contact page               | `src/pages/contact.html`               |
+| a blog post                    | `src/posts/YYYY-MM-DD-slug.md`         |
+| the menu / header / footer     | `src/templates/base.html`              |
+| the home page layout           | `src/templates/home.html`              |
+| the archive page layout        | `src/templates/archive.html`           |
+| colors, fonts, spacing         | `src/static/style.css`                 |
+| images                         | put them in `src/static/images/`       |
+
+Then: `python3 build.py`, open `docs/index.html` (Live Server) to preview,
+`git add . && git commit -m "..." && git push` to publish.
+Every file in `docs/` starts with a "GENERATED ... do not edit" comment.
 
 ## Add a blog post
-1. Create `content/posts/YYYY-MM-DD-slug.md`:
-   ```
-   ---
-   title: My title
-   date: YYYY-MM-DD
-   tags: optional, comma-separated
-   ---
-   Markdown body here.
-   ```
-2. Build: `python3 build.py` (first run sets up `.venv` and installs `markdown` by itself)
-3. Open `docs/index.html` (home: 10 recent posts with excerpts) to preview. `docs/archive.html` lists every post.
-4. `git add . && git commit -m "..." && git push`
-
-Post URL is `/blog/YYYY/MM/DD/slug/` (slug = the filename after the date), so several
-posts can share a date. Images go in `static/images/` and are referenced from a post as
-`../../../../../images/name.png`.
+Create `src/posts/YYYY-MM-DD-slug.md`:
+```
+---
+title: My title
+date: YYYY-MM-DD
+tags: optional, comma-separated
+---
+Markdown body here.
+```
+URL is `/blog/YYYY/MM/DD/slug/`, so several posts can share a date. Images are referenced
+from a post as `../../../../../images/name.png`.
 
 ## Resume
-`static/resume.pdf` is git-ignored because it contains a phone number.
+`src/static/resume.pdf` is git-ignored because it contains a phone number.
 Remove the two lines in `.gitignore` to publish it.
