@@ -141,37 +141,6 @@ section li a {
     text-decoration: underline;
 }
 
-/* ---------- Photo ---------- */
-.photo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 24px;
-    margin-top: 8px;
-    text-align: left;
-}
-
-.avatar {
-    width: 120px;
-    height: 120px;
-    border-radius: 5px;
-    background-color: #e8e0d0;
-    color: #555;
-    font-size: 32px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.photo p {
-    max-width: 360px;
-    font-size: 15px;
-    color: #333;
-}
-
 /* ---------- Places table ---------- */
 .places {
     width: 100%;
@@ -377,13 +346,11 @@ footer {
         color: #bbb;
     }
 
-    .portrait,
-    .avatar {
+    .portrait {
         background-color: #555;
         color: #ddd;
     }
 
-    .photo p,
     .timeline .content p {
         color: #ccc;
     }
