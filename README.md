@@ -6,7 +6,7 @@ Static site: Markdown + HTML sources in, plain HTML out. No database.
 content/
   posts/   blog posts  YYYY-MM-DD-slug.md   (frontmatter: title, date, tags)
   pages/   about.html, contact.html         (frontmatter: title, description)
-templates/ base.html (header/nav/footer), post.html, index.html
+templates/ base.html (header/nav/footer), home.html, archive.html, post.html
 static/    style.css, images/, resume.pdf   (copied as-is)
 docs/      GENERATED output served by GitHub Pages - never edit by hand
 build.py   the generator
@@ -23,7 +23,7 @@ build.py   the generator
    Markdown body here.
    ```
 2. Build: `python3 build.py` (first run sets up `.venv` and installs `markdown` by itself)
-3. Open `docs/index.html` to preview.
+3. Open `docs/index.html` (home: 10 recent posts with excerpts) to preview. `docs/archive.html` lists every post.
 4. `git add . && git commit -m "..." && git push`
 
 One post per date (URL is `/blog/YYYY/MM/DD/`). Images go in `static/images/` and are

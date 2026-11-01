@@ -53,7 +53,13 @@ header .portrait {
     justify-content: center;
 }
 
+header a.portrait,
+header a.identity {
+    text-decoration: none;
+}
+
 header .identity {
+    color: inherit;
     margin-left: 88px;
     min-height: 56px;
     display: flex;
@@ -425,5 +431,63 @@ footer {
     .post th,
     .post td {
         border-bottom-color: #555;
+    }
+}
+
+/* ---------- Home page (recent posts with excerpts) ---------- */
+.home-post {
+    margin-bottom: 2em;
+}
+
+.home-post h2 {
+    text-align: left;
+    font-size: 20px;
+    margin-bottom: 2px;
+}
+
+.home-post h2 a {
+    text-decoration: none;
+}
+
+.home-post h2 a:hover {
+    text-decoration: underline;
+}
+
+.home-post .post-date {
+    color: #696969;
+    font-size: 0.9em;
+}
+
+.home-post blockquote {
+    margin: 0.6em 0 0.4em;
+    padding-left: 14px;
+    border-left: 3px solid #d3d3d3;
+}
+
+.home-post .tags {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    font-size: 0.85em;
+    color: #696969;
+}
+
+.home-post .tags li::before {
+    content: "#";
+}
+
+.more-posts {
+    text-align: center;
+}
+
+@media (prefers-color-scheme: dark) {
+    .home-post .post-date,
+    .home-post .tags {
+        color: #aaa;
+    }
+
+    .home-post blockquote {
+        border-left-color: #555;
     }
 }

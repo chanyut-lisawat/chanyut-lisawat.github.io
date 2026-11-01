@@ -48,6 +48,9 @@ OUT = ROOT / "docs"
 NAME = "Chanyut Lisawat"
 EMAIL = "chanyut.lisawat25@gmail.com"
 CURRENT = ' aria-current="page"'
+HOME_POSTS = 10  # recent posts shown on the home page
+MONTHS = ["January", "February", "March", "April", "May", "June", "July",
+          "August", "September", "October", "November", "December"]
 
 
 def fail(msg):
@@ -81,7 +84,8 @@ def render(out_path, root, body, title, description, current):
     page = template("base").format(
         title=title, description=description, root=root, body=body,
         email=EMAIL, name=NAME,
-        cur_blog=CURRENT if current == "blog" else "",
+        cur_home=CURRENT if current == "home" else "",
+        cur_archive=CURRENT if current == "archive" else "",
         cur_about=CURRENT if current == "about" else "",
         cur_contact=CURRENT if current == "contact" else "",
     )
@@ -126,18 +130,63 @@ def build_posts(posts):
         body = post_tpl.format(title=title, date=p["date"], content=content,
                                tags=tags, nav=nav)
         render(OUT / p["url"] / "index.html", "../../../../", body,
-               f"{title} - {NAME}", title, "blog")
+               f"{title} - {NAME}", title, None)
 
 
-def build_index(posts):
+def long_date(iso):
+    y, m, d = (int(x) for x in iso.split("-"))
+    return f"{MONTHS[m - 1]} {d}, {y}"
+
+
+def excerpt(body, limit=280):
+    """First plain paragraph of a post, flattened to one line. Links are reduced
+    to their text because post-relative paths don't resolve from the home page."""
+    for block in re.split(r"\n\s*\n", body.strip()):
+        block = block.strip()
+        if not block or block[0] in "#`|-*>" or re.match(r"\d+\.", block):
+            continue
+        text = re.sub(r"!\[[^\]]*\]\([^)]*\)", "", block)
+        text = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", text)
+        text = " ".join(text.split())
+        if len(text) > limit:
+            text = text[:limit]
+            if " " in text:
+                text = text.rsplit(" ", 1)[0]
+        return markdown.markdown(text)[3:-4]  # drop the wrapping <p>...</p>
+    return ""
+
+
+def build_home(posts):
+    entries = []
+    for p in posts[:HOME_POSTS]:
+        title = html.escape(p["title"])
+        tags = ""
+        if p["tags"]:
+            tags = ('\n                <ul class="tags">'
+                    + "".join(f"<li>{html.escape(t)}</li>" for t in p["tags"])
+                    + "</ul>")
+        entries.append(
+            f'            <article class="home-post">\n'
+            f'                <h2><a href="{p["url"]}">{title}</a></h2>\n'
+            f'                <p class="post-date">{long_date(p["date"])}</p>\n'
+            f'                <blockquote><p>{excerpt(p["body"])} '
+            f'<a href="{p["url"]}">[&hellip;]</a></p></blockquote>{tags}\n'
+            f"            </article>"
+        )
+    body = template("home").format(entries="\n".join(entries), total=len(posts))
+    render(OUT / "index.html", "", body, NAME, "Blog of Chanyut Lisawat.", "home")
+
+
+def build_archive(posts):
     n = len(posts)
     items = "\n".join(
         f'                <li><span class="date">{p["date"]}</span> '
         f'<a href="{p["url"]}">{html.escape(p["title"])}</a></li>'
         for p in posts)
     count = f'There {"is" if n == 1 else "are"} {n} post{"" if n == 1 else "s"}.'
-    body = template("index").format(count=count, items=items)
-    render(OUT / "index.html", "", body, NAME, "Blog of Chanyut Lisawat.", "blog")
+    body = template("archive").format(count=count, items=items)
+    render(OUT / "archive.html", "", body, f"Archive - {NAME}",
+           "All posts by Chanyut Lisawat.", "archive")
 
 
 def build_pages():
@@ -153,7 +202,8 @@ def main():
     shutil.copytree(STATIC, OUT)
     posts = load_posts()
     build_posts(posts)
-    build_index(posts)
+    build_home(posts)
+    build_archive(posts)
     build_pages()
     print(f"built {len(posts)} post(s) into docs/")
 

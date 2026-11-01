@@ -10,15 +10,16 @@
 <body>
     <header>
         <div class="container">
-            <div class="portrait" role="img" aria-label="chanyut">CL</div>
-            <div class="identity">
+            <a class="portrait" href="index.html" aria-label="chanyut, home">CL</a>
+            <a class="identity" href="index.html">
                 <h1>Research Engineer</h1>
                 <h1>chanyut</h1>
                 <address>chanyut lisawat &middot; chanyut.lisawat25@gmail.com</address>
-            </div>
+            </a>
             <nav>
                 <ul>
-                    <li><a href="index.html" aria-current="page">Blog</a></li>
+                    <li><a href="index.html" aria-current="page">Home</a></li>
+                    <li><a href="archive.html">Archive</a></li>
                     <li><a href="about.html">About</a></li>
                     <li><a href="contact.html">Contact</a></li>
                 </ul>
@@ -27,16 +28,37 @@
     </header>
 
     <main>
-        <section id="posts">
-            <h2>Blog</h2>
-            <p class="blog-count">There are 5 posts.</p>
-            <ul class="blog-list">
-                <li><span class="date">2026-11-05</span> <a href="blog/2026/11/05/">ตัวอย่างการใส่ลิงก์</a></li>
-                <li><span class="date">2026-11-02</span> <a href="blog/2026/11/02/">pip กับ venv ต่างกันยังไง และทำไมถึงต้องมี activate</a></li>
-                <li><span class="date">2026-11-01</span> <a href="blog/2026/11/01/">Building my first personal website</a></li>
-                <li><span class="date">2026-10-02</span> <a href="blog/2026/10/02/">My first steps with programming</a></li>
-                <li><span class="date">2026-09-15</span> <a href="blog/2026/09/15/">What I&#x27;m working on now</a></li>
-            </ul>
+        <section id="recent">
+            <article class="home-post">
+                <h2><a href="blog/2026/11/05/">ตัวอย่างการใส่ลิงก์</a></h2>
+                <p class="post-date">November 5, 2026</p>
+                <blockquote><p>วันนี้จะลองใส่ลิงก์หลายแบบในโพสต์เดียว <a href="blog/2026/11/05/">[&hellip;]</a></p></blockquote>
+                <ul class="tags"><li>markdown</li><li>notes</li></ul>
+            </article>
+            <article class="home-post">
+                <h2><a href="blog/2026/11/02/">pip กับ venv ต่างกันยังไง และทำไมถึงต้องมี activate</a></h2>
+                <p class="post-date">November 2, 2026</p>
+                <blockquote><p>ตอนทำเว็บนี้ ผมเขียนสคริปต์ Python ตัวเล็ก ๆ (<code>build.py</code>) ที่แปลงไฟล์ Markdown เป็น HTML สคริปต์ใช้แพ็กเกจ <code>markdown</code> ตัวเดียว แต่พอรัน <code>python3 build.py</code> กลับเจอ error <a href="blog/2026/11/02/">[&hellip;]</a></p></blockquote>
+                <ul class="tags"><li>python</li><li>pip</li><li>venv</li></ul>
+            </article>
+            <article class="home-post">
+                <h2><a href="blog/2026/11/01/">Building my first personal website</a></h2>
+                <p class="post-date">November 1, 2026</p>
+                <blockquote><p>Write about how you built this site here. <a href="blog/2026/11/01/">[&hellip;]</a></p></blockquote>
+                <ul class="tags"><li>web</li></ul>
+            </article>
+            <article class="home-post">
+                <h2><a href="blog/2026/10/02/">My first steps with programming</a></h2>
+                <p class="post-date">October 2, 2026</p>
+                <blockquote><p>Write about your first steps with programming here. <a href="blog/2026/10/02/">[&hellip;]</a></p></blockquote>
+                <ul class="tags"><li>programming</li></ul>
+            </article>
+            <article class="home-post">
+                <h2><a href="blog/2026/09/15/">What I&#x27;m working on now</a></h2>
+                <p class="post-date">September 15, 2026</p>
+                <blockquote><p>Write about what you're working on here. <a href="blog/2026/09/15/">[&hellip;]</a></p></blockquote>
+            </article>
+            <p class="more-posts"><a href="archive.html">All 5 posts in the archive &raquo;</a></p>
         </section>
 
     </main>
