@@ -1,6 +1,11 @@
 .venv/
 __pycache__/
+.DS_Store
 
 # Resume contains a phone number. Delete these two lines to publish it.
 src/static/resume.pdf
 docs/resume.pdf
+
+# Full-size original photo: keep locally, publish only the small avatar.webp
+src/static/images/IMG_*
+docs/images/IMG_*

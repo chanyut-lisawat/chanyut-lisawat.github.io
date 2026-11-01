@@ -58,6 +58,14 @@ header a.portrait {
     text-decoration: none;
 }
 
+header .portrait img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    object-fit: cover;
+}
+
 header .identity {
     color: inherit;
     margin-left: 88px;
