@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{title}</title>
+    <meta name="description" content="{description}">
+    <link rel="stylesheet" href="{root}style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="portrait" role="img" aria-label="chanyut">CL</div>
+            <div class="identity">
+                <h1>chanyut</h1>
+                <address>chanyut lisawat &middot; {email}</address>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="{root}index.html"{cur_blog}>Blog</a></li>
+                    <li><a href="{root}about.html"{cur_about}>About</a></li>
+                    <li><a href="{root}contact.html"{cur_contact}>Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+{body}
+    </main>
+
+    <footer>
+        <p>{name}</p>
+    </footer>
+</body>
+</html>

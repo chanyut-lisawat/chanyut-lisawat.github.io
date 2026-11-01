@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-"""Static blog generator. Usage: .venv/bin/python build.py
+"""Static site generator.  Usage: .venv/bin/python build.py
 
-Reads posts/YYYY-MM-DD-slug.md (frontmatter: title, date, tags) and writes
-blog/YYYY/MM/DD/index.html for each plus a regenerated index.html (the home page).
+  content/posts/YYYY-MM-DD-slug.md   blog posts (frontmatter: title, date, tags)
+  content/pages/<name>.html          standalone pages (frontmatter: title, description)
+  templates/*.html                   page layouts
+  static/                            copied as-is (css, images, resume.pdf)
+  docs/                              OUTPUT - generated, never edit by hand
 """
 import html
 import re
@@ -13,55 +16,26 @@ from pathlib import Path
 import markdown
 
 ROOT = Path(__file__).parent
-POSTS = ROOT / "posts"
-OUT = ROOT / "blog"
+CONTENT = ROOT / "content"
+TEMPLATES = ROOT / "templates"
+STATIC = ROOT / "static"
+OUT = ROOT / "docs"
+
 NAME = "Chanyut Lisawat"
 EMAIL = "chanyut.lisawat25@gmail.com"
-
-PAGE = """<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{title}</title>
-    <meta name="description" content="{desc}">
-    <link rel="stylesheet" href="{root}style.css">
-</head>
-<body>
-    <header>
-        <div class="container">
-            <div class="portrait" role="img" aria-label="chanyut">CL</div>
-            <div class="identity">
-                <h1>chanyut</h1>
-                <address>chanyut lisawat &middot; {email}</address>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="{root}index.html" aria-current="page">Blog</a></li>
-                    <li><a href="{root}about.html">About</a></li>
-                    <li><a href="{root}contact.html">Contact</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-
-    <main>
-{body}
-    </main>
-
-    <footer>
-        <p>{name}</p>
-    </footer>
-</body>
-</html>
-"""
+CURRENT = ' aria-current="page"'
 
 
 def fail(msg):
     sys.exit(f"build.py: {msg}")
 
 
-def parse(path):
+def template(name):
+    return (TEMPLATES / f"{name}.html").read_text(encoding="utf-8")
+
+
+def parse(path, required=()):
+    """Split '--- key: value ---' frontmatter from the body."""
     text = path.read_text(encoding="utf-8")
     m = re.match(r"---\n(.*?)\n---\n?(.*)", text, re.S)
     if not m:
@@ -71,85 +45,93 @@ def parse(path):
         if ":" in line:
             k, v = line.split(":", 1)
             meta[k.strip()] = v.strip()
-    for key in ("title", "date"):
+    for key in required:
         if not meta.get(key):
             fail(f"{path.name}: frontmatter missing '{key}'")
-    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", meta["date"]):
-        fail(f"{path.name}: date must be YYYY-MM-DD")
-    meta["tags"] = [t.strip() for t in meta.get("tags", "").split(",") if t.strip()]
-    meta["body_md"] = m.group(2)
+    meta["body"] = m.group(2)
     return meta
 
 
-def main():
-    posts = [parse(p) for p in sorted(POSTS.glob("*.md"))]
+def render(out_path, root, body, title, description, current):
+    """Wrap body in the base layout and write it to out_path."""
+    page = template("base").format(
+        title=title, description=description, root=root, body=body,
+        email=EMAIL, name=NAME,
+        cur_blog=CURRENT if current == "blog" else "",
+        cur_about=CURRENT if current == "about" else "",
+        cur_contact=CURRENT if current == "contact" else "",
+    )
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(page, encoding="utf-8")
+
+
+def load_posts():
+    posts = []
+    for path in sorted((CONTENT / "posts").glob("*.md")):
+        p = parse(path, required=("title", "date"))
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", p["date"]):
+            fail(f"{path.name}: date must be YYYY-MM-DD")
+        p["tags"] = [t.strip() for t in p.get("tags", "").split(",") if t.strip()]
+        posts.append(p)
     seen = set()
     for p in posts:
         if p["date"] in seen:
             fail(f"two posts share date {p['date']} (URL is /blog/YYYY/MM/DD/)")
         seen.add(p["date"])
     posts.sort(key=lambda p: p["date"], reverse=True)
+    for p in posts:
+        y, m, d = p["date"].split("-")
+        p["url"] = f"blog/{y}/{m}/{d}/"
+    return posts
 
-    if OUT.exists():
-        shutil.rmtree(OUT)  # output only; sources live in posts/
 
+def build_posts(posts):
+    post_tpl = template("post")
     for i, p in enumerate(posts):
-        y, mo, d = p["date"].split("-")
-        p["url"] = f"blog/{y}/{mo}/{d}/"
-        content = markdown.markdown(
-            p["body_md"], extensions=["fenced_code", "tables"]
-        )
+        content = markdown.markdown(p["body"], extensions=["fenced_code", "tables"])
         title = html.escape(p["title"])
-        older = posts[i + 1] if i + 1 < len(posts) else None
         nav = ""
-        if older:
-            oy, om, od = older["date"].split("-")
-            nav = (
-                f'<p class="post-nav"><a href="../../../../blog/{oy}/{om}/{od}/" '
-                f'rel="prev">&laquo; {html.escape(older["title"])}</a></p>'
-            )
+        if i + 1 < len(posts):
+            older = posts[i + 1]
+            nav = (f'<p class="post-nav"><a href="../../../{older["url"][5:]}" '
+                   f'rel="prev">&laquo; {html.escape(older["title"])}</a></p>')
         tags = ""
         if p["tags"]:
             tags = '<p class="tags">' + " ".join(
-                f"<span>{html.escape(t)}</span>" for t in p["tags"]
-            ) + "</p>"
-        body = (
-            f'        <article class="post">\n'
-            f'            <h2 class="post-title">{title}</h2>\n'
-            f'            <p class="post-date">{p["date"]}</p>\n'
-            f"{content}\n{tags}\n{nav}\n"
-            f"        </article>"
-        )
-        out = OUT / y / mo / d
-        out.mkdir(parents=True)
-        (out / "index.html").write_text(
-            PAGE.format(
-                title=f"{title} - {NAME}", desc=title, root="../../../../",
-                email=EMAIL, name=NAME, body=body,
-            ),
-            encoding="utf-8",
-        )
+                f"<span>{html.escape(t)}</span>" for t in p["tags"]) + "</p>"
+        body = post_tpl.format(title=title, date=p["date"], content=content,
+                               tags=tags, nav=nav)
+        render(OUT / p["url"] / "index.html", "../../../../", body,
+               f"{title} - {NAME}", title, "blog")
 
+
+def build_index(posts):
+    n = len(posts)
     items = "\n".join(
         f'                <li><span class="date">{p["date"]}</span> '
         f'<a href="{p["url"]}">{html.escape(p["title"])}</a></li>'
-        for p in posts
-    )
-    n = len(posts)
-    body = (
-        '        <section id="posts">\n'
-        "            <h2>Blog</h2>\n"
-        f'            <p class="blog-count">There {"is" if n == 1 else "are"} {n} post{"" if n == 1 else "s"}.</p>\n'
-        f'            <ul class="blog-list">\n{items}\n            </ul>\n'
-        "        </section>"
-    )
-    page = PAGE.format(
-        title=NAME, desc="Blog of Chanyut Lisawat.", root="",
-        email=EMAIL, name=NAME, body=body,
-    )
-    page = "<!-- GENERATED by build.py from posts/*.md - do not edit by hand -->\n" + page
-    (ROOT / "index.html").write_text(page, encoding="utf-8")
-    print(f"built {n} post(s)")
+        for p in posts)
+    count = f'There {"is" if n == 1 else "are"} {n} post{"" if n == 1 else "s"}.'
+    body = template("index").format(count=count, items=items)
+    render(OUT / "index.html", "", body, NAME, "Blog of Chanyut Lisawat.", "blog")
+
+
+def build_pages():
+    for path in sorted((CONTENT / "pages").glob("*.html")):
+        p = parse(path, required=("title", "description"))
+        render(OUT / f"{path.stem}.html", "", p["body"].rstrip("\n"),
+               p["title"], p["description"], path.stem)
+
+
+def main():
+    if OUT.exists():
+        shutil.rmtree(OUT)
+    shutil.copytree(STATIC, OUT)
+    posts = load_posts()
+    build_posts(posts)
+    build_index(posts)
+    build_pages()
+    print(f"built {len(posts)} post(s) into docs/")
 
 
 if __name__ == "__main__":

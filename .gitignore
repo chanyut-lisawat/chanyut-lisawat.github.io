@@ -1,2 +1,6 @@
 .venv/
 __pycache__/
+
+# Resume contains a phone number. Delete these two lines to publish it.
+static/resume.pdf
+docs/resume.pdf
