@@ -1,0 +1,543 @@
+/* ---------- Reset & base ---------- */
+:root {
+    --link: #3b3bd1; /* ~7:1 on white */
+}
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    color: #000;
+    background-color: #fff;
+    font-family: sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+a {
+    color: var(--link);
+}
+
+/* ---------- Header ---------- */
+header {
+    border-bottom: 1px solid #ffebcd; /* BlanchedAlmond */
+    box-shadow: 0 0 10px #a9a9a9; /* DarkGray */
+    background-color: #f5f5dc; /* Beige */
+    padding: 12px 0;
+}
+
+header .container {
+    position: relative;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 16px;
+}
+
+header .portrait {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 56px;
+    height: 56px;
+    border-radius: 5px;
+    background-color: #e8e0d0;
+    color: #555;
+    font-size: 20px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+header .identity {
+    margin-left: 88px;
+    min-height: 56px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+header h1 {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 1.1;
+    margin-bottom: 2px;
+}
+
+header address {
+    font-size: 12px;
+    color: #444;
+    font-style: normal;
+    line-height: 1.3;
+}
+
+header nav {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+header nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+header nav li {
+    display: inline-block;
+    margin-left: 18px;
+}
+
+header nav a {
+    font-size: 14px;
+    text-decoration: none;
+    color: var(--link);
+}
+
+header nav a:hover {
+    text-decoration: underline;
+}
+header nav a[aria-current="page"] {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+/* ---------- Main column ---------- */
+main {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 40px 16px 48px;
+    line-height: 1.5;
+    text-align: left;
+    overflow-wrap: break-word;
+}
+
+main a:visited {
+    color: var(--link); /* visited */
+}
+
+section {
+    margin-bottom: 2.5em;
+}
+
+section > h2 {
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+    margin: 0.5em 0;
+}
+
+section > p {
+    margin: 0.75em 0;
+}
+
+section > p a,
+section li a {
+    text-decoration: underline;
+}
+
+/* ---------- Photo ---------- */
+.photo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-top: 8px;
+    text-align: left;
+}
+
+.avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 5px;
+    background-color: #e8e0d0;
+    color: #555;
+    font-size: 32px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.photo p {
+    max-width: 360px;
+    font-size: 15px;
+    color: #333;
+}
+
+/* ---------- Places table ---------- */
+.places {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0;
+    font-size: 15px;
+}
+
+.places th,
+.places td {
+    text-align: left;
+    padding: 6px 12px;
+    border-bottom: 1px solid #d3d3d3;
+}
+
+.places th {
+    font-weight: bold;
+    font-size: 14px;
+    letter-spacing: 0.03em;
+    border-bottom: 2px solid #d3d3d3;
+}
+
+.places tbody tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* ---------- Timeline ---------- */
+.timeline {
+    position: relative;
+    max-width: 700px;
+    margin: 16px auto 0;
+    padding: 0 8px;
+}
+
+.timeline::after {
+    content: '';
+    position: absolute;
+    width: 3px;
+    background-color: #c0c0c0;
+    top: 12px;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 2px;
+}
+
+.timeline .timeline-item {
+    padding: 12px 32px;
+    position: relative;
+    width: 50%;
+}
+
+.timeline .timeline-item::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    background-color: #fff;
+    border: 3px solid #c0c0c0;
+    top: 18px;
+    border-radius: 50%;
+    z-index: 2;
+}
+
+.timeline .left {
+    left: 0;
+}
+
+.timeline .right {
+    left: 50%;
+}
+
+.timeline .left::after {
+    right: -10px;
+}
+
+.timeline .right::after {
+    left: -10px;
+}
+
+.timeline .content {
+    padding: 12px 16px;
+    background-color: #fff;
+    border: 1px solid #d3d3d3;
+    border-radius: 4px;
+}
+
+.timeline .content h3 {
+    text-align: left;
+    margin-bottom: 4px;
+    color: #000;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.timeline .content p {
+    text-align: left;
+    font-size: 14px;
+    color: #333;
+}
+
+/* ---------- Resume ---------- */
+.resume-link {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: var(--link);
+    text-decoration: underline;
+}
+
+/* ---------- Blog ---------- */
+.blog-count {
+    font-size: 0.85em;
+    color: #888;
+    margin-bottom: 16px;
+    text-align: left;
+}
+
+.blog-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+}
+
+.blog-list li {
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.blog-list .date {
+    color: #696969; /* DimGray */
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    margin-right: 12px;
+}
+
+.blog-list a {
+    text-decoration: none;
+    color: var(--link);
+}
+
+.blog-list a:hover {
+    text-decoration: underline;
+}
+
+/* ---------- Contact ---------- */
+.contact-list {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px 28px;
+    margin-top: 8px;
+    text-align: left;
+}
+
+.contact-list a {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* ---------- Footer ---------- */
+footer {
+    display: block;
+    text-align: center;
+    font-size: 0.75em;
+    color: #808080; /* Gray */
+    max-width: 450px;
+    margin: 0.5em auto 1em auto;
+}
+
+/* ---------- Dark mode (matches system preference) ---------- */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --link: #aaaaff;
+    }
+
+    body {
+        color: #eee;
+        background-color: #333;
+    }
+
+    a {
+        color: var(--link);
+    }
+
+    main a:visited {
+        color: var(--link);
+    }
+
+    section > h2 {
+        color: #eee;
+    }
+
+    header {
+        background-color: #444;
+        border-bottom: 1px solid #444;
+        box-shadow: 0 0 10px #222;
+    }
+
+    header address {
+        color: #bbb;
+    }
+
+    .portrait,
+    .avatar {
+        background-color: #555;
+        color: #ddd;
+    }
+
+    .photo p,
+    .timeline .content p {
+        color: #ccc;
+    }
+
+    .places th,
+    .places td {
+        border-bottom-color: #555;
+    }
+
+    .places th {
+        border-bottom-color: #555;
+    }
+
+    .places tbody tr:hover {
+        background-color: #3a3a3a;
+    }
+
+    .timeline::after {
+        background-color: #666;
+    }
+
+    .timeline .timeline-item::after {
+        background-color: #333;
+        border-color: #666;
+    }
+
+    .timeline .content {
+        background-color: #333;
+        border-color: #555;
+    }
+
+    .timeline .content h3 {
+        color: #eee;
+    }
+
+    .blog-count {
+        color: #aaa;
+    }
+
+    .blog-list .date {
+        color: #aaa;
+    }
+
+    footer {
+        color: #999;
+    }
+}
+
+/* ---------- Responsive ---------- */
+@media screen and (max-width: 649px) {
+    header .identity {
+        display: none;
+    }
+
+    .blog-list .date {
+        display: none;
+    }
+
+    .timeline::after {
+        left: 24px;
+    }
+
+    .timeline .timeline-item {
+        width: 100%;
+        padding-left: 52px;
+        padding-right: 16px;
+    }
+
+    .timeline .left::after,
+    .timeline .right::after {
+        left: 17px;
+    }
+
+    .timeline .right {
+        left: 0;
+    }
+}
+
+/* ---------- Blog posts ---------- */
+.post .post-title {
+    margin-bottom: 4px;
+}
+
+.post .post-date {
+    text-align: center;
+    color: #696969;
+    font-size: 0.9em;
+    margin-bottom: 1.5em;
+}
+
+.post p,
+.post ul,
+.post ol {
+    margin: 0.75em 0;
+}
+
+.post ul,
+.post ol {
+    padding-left: 1.5em;
+}
+
+.post h3 {
+    margin: 1.5em 0 0.5em;
+    font-size: 17px;
+}
+
+.post pre {
+    margin: 1em 0;
+    padding: 10px 14px;
+    overflow-x: auto;
+    background-color: #f5f5f5;
+    border: 1px solid #d3d3d3;
+    border-radius: 4px;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.post code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.92em;
+}
+
+.post img {
+    max-width: 100%;
+    height: auto;
+}
+
+.post .tags span {
+    font-size: 0.85em;
+    margin-right: 8px;
+    color: #696969;
+}
+
+.post .tags span::before {
+    content: "#";
+}
+
+.post .post-nav {
+    margin-top: 2em;
+}
+
+@media (prefers-color-scheme: dark) {
+    .post .post-date,
+    .post .tags span {
+        color: #aaa;
+    }
+
+    .post pre {
+        background-color: #2b2b2b;
+        border-color: #555;
+    }
+}
+
+.post .post-title {
+    text-align: center;
+    font-size: 22px;
+}
