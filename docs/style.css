@@ -402,3 +402,28 @@ footer {
     text-align: center;
     font-size: 22px;
 }
+
+.post table {
+    border-collapse: collapse;
+    margin: 1em 0;
+    width: 100%;
+    font-size: 15px;
+}
+
+.post th,
+.post td {
+    text-align: left;
+    padding: 6px 12px;
+    border-bottom: 1px solid #d3d3d3;
+}
+
+.post th {
+    border-bottom-width: 2px;
+}
+
+@media (prefers-color-scheme: dark) {
+    .post th,
+    .post td {
+        border-bottom-color: #555;
+    }
+}

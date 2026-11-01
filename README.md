@@ -22,8 +22,7 @@ build.py   the generator
    ---
    Markdown body here.
    ```
-2. Build: `.venv/bin/python build.py`
-   (first time: `python3 -m venv .venv && .venv/bin/pip install markdown`)
+2. Build: `python3 build.py` (first run sets up `.venv` and installs `markdown` by itself)
 3. Open `docs/index.html` to preview.
 4. `git add . && git commit -m "..." && git push`
 

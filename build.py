@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Static site generator.  Usage: .venv/bin/python build.py
+"""Static site generator.  Usage: python3 build.py
 
   content/posts/YYYY-MM-DD-slug.md   blog posts (frontmatter: title, date, tags)
   content/pages/<name>.html          standalone pages (frontmatter: title, description)
@@ -8,14 +8,38 @@
   docs/                              OUTPUT - generated, never edit by hand
 """
 import html
+import os
 import re
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
-import markdown
-
 ROOT = Path(__file__).parent
+
+
+def ensure_markdown():
+    """Make `python3 build.py` work anywhere: if `markdown` is missing, create
+    .venv, install it there, and re-run this script with the venv's Python."""
+    try:
+        import markdown  # noqa: F401
+        return
+    except ImportError:
+        pass
+    venv_python = ROOT / ".venv" / "bin" / "python"
+    if os.environ.get("BUILD_PY_REEXEC"):  # already re-ran once; don't loop
+        sys.exit("build.py: could not install 'markdown'; try: .venv/bin/pip install markdown")
+    os.environ["BUILD_PY_REEXEC"] = "1"
+    if not venv_python.exists():
+        print("Creating .venv and installing markdown (one-time)...")
+        subprocess.check_call([sys.executable, "-m", "venv", str(ROOT / ".venv")])
+    subprocess.check_call([str(venv_python), "-m", "pip", "install", "-q", "markdown"])
+    os.execv(str(venv_python), [str(venv_python), *sys.argv])
+
+
+ensure_markdown()
+import markdown  # noqa: E402
+
 CONTENT = ROOT / "content"
 TEMPLATES = ROOT / "templates"
 STATIC = ROOT / "static"
