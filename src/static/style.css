@@ -31,6 +31,7 @@ header {
 
 header .container {
     position: relative;
+    min-height: 56px; /* keeps header height when the name block is hidden on narrow screens */
     max-width: 700px;
     margin: 0 auto;
     padding: 0 16px;
@@ -343,11 +344,14 @@ footer {
 }
 
 /* ---------- Responsive ---------- */
-@media screen and (max-width: 649px) {
+/* five menu items need more room: drop the name block before they collide with it */
+@media screen and (max-width: 720px) {
     header .identity {
         display: none;
     }
+}
 
+@media screen and (max-width: 649px) {
     .blog-list .date {
         display: none;
     }
@@ -547,5 +551,17 @@ footer {
     .home-post .read-more,
     .home-post .read-more a {
         color: #888;
+    }
+}
+
+/* ---------- Tags ---------- */
+.tag-count {
+    color: #696969;
+    margin-left: 4px;
+}
+
+@media (prefers-color-scheme: dark) {
+    .tag-count {
+        color: #aaa;
     }
 }

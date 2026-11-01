@@ -14,6 +14,7 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
+from urllib.parse import quote
 
 ROOT = Path(__file__).parent
 
@@ -86,6 +87,7 @@ def render(out_path, root, body, title, description, current, source):
         email=EMAIL, name=NAME,
         cur_home=CURRENT if current == "home" else "",
         cur_archive=CURRENT if current == "archive" else "",
+        cur_tags=CURRENT if current == "tags" else "",
         cur_about=CURRENT if current == "about" else "",
         cur_contact=CURRENT if current == "contact" else "",
     )
@@ -134,11 +136,20 @@ def build_posts(posts):
         tags = ""
         if p["tags"]:
             tags = '<p class="tags">' + " ".join(
-                f"<span>{html.escape(t)}</span>" for t in p["tags"]) + "</p>"
+                f'<span><a href="../../../../../{tag_url(t)}">{html.escape(t)}</a></span>'
+                for t in p["tags"]) + "</p>"
         body = post_tpl.format(title=title, date=p["date"], content=content,
                                tags=tags, nav=nav)
         render(OUT / p["url"] / "index.html", "../../../../../", body,
                f"{title} - {NAME}", title, None, p["source"])
+
+
+def tag_slug(tag):
+    return re.sub(r"[\s/]+", "-", tag.strip().lower())
+
+
+def tag_url(tag):
+    return f"tags/{quote(tag_slug(tag))}/"
 
 
 def long_date(iso):
@@ -171,7 +182,8 @@ def build_home(posts):
         tags = ""
         if p["tags"]:
             tags = ('\n                <ul class="tags">'
-                    + "".join(f"<li>{html.escape(t)}</li>" for t in p["tags"])
+                    + "".join(f'<li><a href="{tag_url(t)}">{html.escape(t)}</a></li>'
+                              for t in p["tags"])
                     + "</ul>")
         entries.append(
             f'            <article class="home-post">\n'
@@ -199,6 +211,41 @@ def build_archive(posts):
            "src/templates/archive.html and src/posts/")
 
 
+def post_items(posts):
+    return "\n".join(
+        f'                <li><span class="date">{p["date"]}</span> '
+        f'<a href="{{up}}{p["url"]}">{html.escape(p["title"])}</a></li>'
+        for p in posts)
+
+
+def build_tags(posts):
+    by_tag = {}
+    for p in posts:  # posts are newest-first, so each list is too
+        for t in p["tags"]:
+            by_tag.setdefault(t, []).append(p)
+    tags = sorted(by_tag, key=str.lower)
+
+    items = "\n".join(
+        f'                <li><a href="{tag_url(t)[5:]}">{html.escape(t)}</a> '
+        f'<span class="tag-count">({len(by_tag[t])})</span></li>' for t in tags)
+    if not items:
+        items = "                <li>No tags yet.</li>"
+    body = template("tags").format(items=items)
+    render(OUT / "tags" / "index.html", "../", body, f"Tags - {NAME}",
+           "All tags used on this blog.", "tags", "src/templates/tags.html and src/posts/")
+
+    for t in tags:
+        n = len(by_tag[t])
+        body = template("tag").format(
+            title=html.escape(t),
+            count=f'{n} post{"" if n == 1 else "s"} tagged "{html.escape(t)}".',
+            items=post_items(by_tag[t]).replace("{up}", "../../"))
+        render(OUT / tag_url(t) / "index.html", "../../", body,
+               f'Posts tagged "{html.escape(t)}" - {NAME}',
+               f'Posts tagged "{html.escape(t)}".', "tags",
+               "src/templates/tag.html and src/posts/")
+
+
 def build_pages():
     for path in sorted((SRC / "pages").glob("*.html")):
         p = parse(path, required=("title", "description"))
@@ -214,6 +261,7 @@ def main():
     build_posts(posts)
     build_home(posts)
     build_archive(posts)
+    build_tags(posts)
     build_pages()
     print(f"built {len(posts)} post(s) into docs/")
 
