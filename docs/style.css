@@ -53,8 +53,7 @@ header .portrait {
     justify-content: center;
 }
 
-header a.portrait,
-header a.identity {
+header a.portrait {
     text-decoration: none;
 }
 
@@ -110,7 +109,6 @@ header nav a:hover {
 }
 header nav a[aria-current="page"] {
     font-weight: bold;
-    text-decoration: underline;
 }
 
 /* ---------- Main column ---------- */
@@ -434,47 +432,75 @@ footer {
     }
 }
 
-/* ---------- Home page (recent posts with excerpts) ---------- */
+/* ---------- Home page (recent posts with excerpts, nullprogram style) ---------- */
 .home-post {
     margin-bottom: 2em;
 }
 
+.home-post + .home-post::before {
+    content: "";
+    display: block;
+    width: 75%;
+    margin: 0 auto 2em;
+    border-top: 1px solid #c0c0c0;
+}
+
 .home-post h2 {
-    text-align: left;
+    text-align: center;
     font-size: 20px;
-    margin-bottom: 2px;
+    margin: 0.5em 0;
 }
 
 .home-post h2 a {
     text-decoration: none;
 }
 
-.home-post h2 a:hover {
-    text-decoration: underline;
-}
-
 .home-post .post-date {
+    text-align: center;
     color: #696969;
-    font-size: 0.9em;
+    font-size: 0.8em;
 }
 
 .home-post blockquote {
-    margin: 0.6em 0 0.4em;
-    padding-left: 14px;
-    border-left: 3px solid #d3d3d3;
+    margin: 0.75em 0;
+    padding: 0;
+    border: 0;
+}
+
+.home-post blockquote p {
+    margin: 0;
+}
+
+.home-post .read-more {
+    color: #808080;
+    text-align: center;
+    font-size: 1.6em;
+    font-weight: bold;
+    line-height: 1.4;
+}
+
+.home-post .read-more a {
+    color: #808080;
+    text-decoration: none;
 }
 
 .home-post .tags {
     list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px 12px;
-    font-size: 0.85em;
-    color: #696969;
+    text-align: right;
+    font-size: 0.95em;
 }
 
-.home-post .tags li::before {
-    content: "#";
+.home-post .tags::before {
+    content: "tags [ ";
+}
+
+.home-post .tags::after {
+    content: " ]";
+}
+
+.home-post .tags li {
+    display: inline-block;
+    margin: 0 0.25em;
 }
 
 .more-posts {
@@ -482,12 +508,16 @@ footer {
 }
 
 @media (prefers-color-scheme: dark) {
-    .home-post .post-date,
-    .home-post .tags {
+    .home-post + .home-post::before {
+        border-top-color: #ddd;
+    }
+
+    .home-post .post-date {
         color: #aaa;
     }
 
-    .home-post blockquote {
-        border-left-color: #555;
+    .home-post .read-more,
+    .home-post .read-more a {
+        color: #888;
     }
 }

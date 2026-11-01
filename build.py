@@ -173,8 +173,8 @@ def build_home(posts):
             f'            <article class="home-post">\n'
             f'                <h2><a href="{p["url"]}">{title}</a></h2>\n'
             f'                <p class="post-date">{long_date(p["date"])}</p>\n'
-            f'                <blockquote><p>{excerpt(p["body"])} '
-            f'<a href="{p["url"]}">[&hellip;]</a></p></blockquote>{tags}\n'
+            f'                <blockquote><p>{excerpt(p["body"])}</p></blockquote>\n'
+            f'                <div class="read-more">[<a href="{p["url"]}">&hellip;</a>]</div>{tags}\n'
             f"            </article>"
         )
     body = template("home").format(entries="\n".join(entries), total=len(posts))
