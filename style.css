@@ -214,11 +214,11 @@ section li a {
 }
 
 .timeline .left::after {
-    right: -10px;
+    right: -7px; /* half of the 14px dot, so it centres on the line */
 }
 
 .timeline .right::after {
-    left: -10px;
+    left: -7px;
 }
 
 .timeline .content {
@@ -419,9 +419,11 @@ footer {
         padding-right: 16px;
     }
 
+    /* line centre is 24px from .timeline; item starts 8px in (padding); dot is 14px wide */
     .timeline .left::after,
     .timeline .right::after {
-        left: 17px;
+        left: 9px;
+        right: auto;
     }
 
     .timeline .right {
