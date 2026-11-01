@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Chanyut Lisawat</title>
+    <meta name="description" content="Personal website of Chanyut Lisawat, researcher and developer (machine learning and full-stack) studying Computer Science at Burapha University.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="portrait" role="img" aria-label="chanyut">CL</div>
+            <div class="identity">
+                <h1>chanyut</h1>
+                <address>chanyut lisawat &middot; chanyut.lisawat25@gmail.com</address>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Blog</a></li>
+                    <li><a href="about.html" aria-current="page">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="about">
+            <h2>About Me</h2>
+            <p>
+                Hi, I'm <strong>Chanyut Lisawat</strong>, a researcher and developer based in
+                Chonburi, Thailand. I'm studying Computer Science at Burapha University, with
+                experience in machine learning research and full-stack development.
+            </p>
+        </section>
+
+        <section id="skills">
+            <h2>Skills</h2>
+            <dl class="skills">
+                <dt>Programming Languages</dt>
+                <dd>Python, SQL, JavaScript</dd>
+                <dt>MLOps/DevOps</dt>
+                <dd>Docker, Git, GitHub Actions, FastAPI</dd>
+                <dt>Machine Learning</dt>
+                <dd>TensorFlow, Keras, PyTorch, Scikit-learn, spaCy</dd>
+                <dt>Other</dt>
+                <dd>NLP, LangChain, Streamlit, HTML, CSS</dd>
+            </dl>
+        </section>
+
+        <section id="education">
+            <h2>Education</h2>
+            <div class="entry">
+                <div class="entry-head">
+                    <h3>Burapha University</h3>
+                </div>
+                <p>Bachelor of Science (B.Sc.) &middot; Major: Computer Science &middot; Cumulative GPA: 3.67/4.00</p>
+            </div>
+        </section>
+
+        <section id="experience">
+            <h2>Professional Experience</h2>
+            <div class="entry">
+                <div class="entry-head">
+                    <h3>Researcher (Intern), NECTEC</h3>
+                    <span class="entry-date">Apr 2025 &ndash; Jun 2025</span>
+                </div>
+                <ul>
+                    <li>Engineered a novel Wave Direction Estimation algorithm using Multi-Stage Gabor Filters and CLAHE preprocessing to analyze high-resolution satellite imagery for coastal erosion monitoring.</li>
+                    <li>Achieved 98.29% accuracy with a Mean Absolute Error (MAE) of 0.234&deg; on synthetic benchmarks by implementing a Two-Stage Refinement strategy, significantly outperforming standard detection methods.</li>
+                    <li>Validated model robustness on real-world datasets (Chaloem Burapha Chonlathit Road), attaining a 12.95&deg; MAE and successfully estimating wave direction within &plusmn;20&deg; for 81% of test samples (403 samples).</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="projects">
+            <h2>Projects</h2>
+            <div class="entry">
+                <div class="entry-head">
+                    <h3>Inventory Management System &middot; Full Stack Developer (Intensive Bootcamp)</h3>
+                    <span class="entry-date">Oct 2024</span>
+                </div>
+                <ul>
+                    <li>Designed and architected an end-to-end Inventory Management System (Vue.js/NestJS) supporting:
+                        <ul>
+                            <li>Real-time stock monitoring with low-stock alerts</li>
+                            <li>Automated inventory updates on stock-checks, orders, and usage</li>
+                            <li>Cart-to-order workflow with delivery tracking (pending/delivered/cancelled)</li>
+                            <li>Multi-branch support with comprehensive usage and order reporting</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="entry">
+                <div class="entry-head">
+                    <h3>Text to SQL: Thai Natural Language Question for SQL Generation</h3>
+                    <span class="entry-date">Feb 2026 &ndash; Mar 2026</span>
+                </div>
+                <ul>
+                    <li>Built an AI system that translates Thai natural language questions into SQL queries across SQLite, MySQL, and PostgreSQL.</li>
+                    <li>Implemented Few-shot RAG with dialect-aware filtering to retrieve relevant SQL examples, improving query accuracy.</li>
+                    <li>Reduced prompt token usage by ~40% via Schema Pruning &mdash; sending only relevant tables to the LLM instead of the full schema.</li>
+                    <li>Enforced SQL safety using AST parsing (SQLGlot) to block destructive queries and auto-inject LIMIT clauses.</li>
+                    <li>Built a self-correction loop that auto-retries failed queries by feeding error context back to the LLM.</li>
+                    <li>Benchmarked multiple LLMs (Qwen, GPT-4o-mini, GLM-5) on 25 test cases, achieving up to 80% Execution Accuracy.</li>
+                    <li>Tools: Python, FastAPI, LangChain, Ollama (Qwen), OpenAI, Gemini, ChromaDB, SQLAlchemy, SQLGlot, Chart.js, RAG, Prompt Engineering</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="resume">
+            <h2>Resume</h2>
+            <p>Download my latest resume as a PDF.</p>
+            <a class="resume-link" href="resume.pdf" download>Download Resume</a>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>chanyut lisawat</p>
+    </footer>
+</body>
+</html>

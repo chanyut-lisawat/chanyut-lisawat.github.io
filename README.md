@@ -11,6 +11,6 @@
    Markdown body here.
    ```
 2. Run `.venv/bin/python build.py` (first time: `python3 -m venv .venv && .venv/bin/pip install markdown`).
-3. Open `blog.html`. Don't hand-edit `blog.html` or `blog/` — they are generated.
+3. Open `index.html` (the blog home page). Don't hand-edit `index.html` or `blog/` — they are generated.
 
 One post per date (URL is `/blog/YYYY/MM/DD/`).
