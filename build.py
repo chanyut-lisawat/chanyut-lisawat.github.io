@@ -39,7 +39,7 @@ PAGE = """<!DOCTYPE html>
                 <ul>
                     <li><a href="{root}index.html">Home</a></li>
                     <li><a href="{root}blog.html" aria-current="page">Blog</a></li>
-                    <li><a href="{root}index.html#contact">Contact</a></li>
+                    <li><a href="{root}contact.html">Contact</a></li>
                 </ul>
             </nav>
         </div>
