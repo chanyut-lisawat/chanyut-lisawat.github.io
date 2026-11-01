@@ -565,3 +565,25 @@ footer {
         color: #aaa;
     }
 }
+
+/* ---------- Phones: put the logo and menu in normal flow so they can wrap ---------- */
+@media screen and (max-width: 480px) {
+    header .container {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px 14px;
+        min-height: 0;
+    }
+
+    header .portrait,
+    header nav {
+        position: static;
+        transform: none;
+    }
+
+    header nav li {
+        margin-left: 0;
+        margin-right: 12px;
+    }
+}
