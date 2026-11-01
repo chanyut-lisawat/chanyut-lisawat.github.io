@@ -8,7 +8,7 @@ tags: markdown, notes
 
 ### ลิงก์ไปเว็บอื่น
 
-โค้ดของผมอยู่ที่ [GitHub ของผม](https://github.com/chanyut12)
+โค้ดของผมอยู่ที่ [GitHub ของผม](https://github.com/chanyut-lisawat)
 ส่วนเว็บที่ผมชอบธีมคือ [nullprogram](https://nullprogram.com/)
 
 ### ลิงก์ไปโพสต์อื่นในเว็บเรา
