@@ -1,5 +1,5 @@
 ---
-title: hackertube , a youtube make from what hacker news recommends
+title: Hackertube , A Youtube make from what Hacker News Recommends
 date: 2026-11-03
 tags: technology, ai, llm
 ---
